@@ -1,3 +1,5 @@
+![Chatbot Preview](https://imgs.search.brave.com/LCkbGgy9qHRZZLYPJooyZz9ZXdr6UQn7r3-ieSyKGZ4/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudGVjaC5jby93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyMy8x/Mi8wNjE0NTQzNi9H/b29nbGUtR2VtaW5p/LUFJLTcwOHg0MDAu/anBn)
+
 # Chatbot App using Gemini API
 
 This Flutter application showcases a chatbot integration using the Gemini API.
@@ -6,7 +8,7 @@ This Flutter application showcases a chatbot integration using the Gemini API.
 
 The app allows users to interact with a Gemini API-powered chatbot for various tasks, information retrieval, and handling queries.
 
- ![Chatbot Preview](https://imgs.search.brave.com/LCkbGgy9qHRZZLYPJooyZz9ZXdr6UQn7r3-ieSyKGZ4/rs:fit:500:0:0/g:ce/aHR0cHM6Ly9pbWFn/ZXMudGVjaC5jby93/cC1jb250ZW50L3Vw/bG9hZHMvMjAyMy8x/Mi8wNjE0NTQzNi9H/b29nbGUtR2VtaW5p/LUFJLTcwOHg0MDAu/anBn)
+ 
 
 ## Features
 
@@ -28,12 +30,15 @@ Follow these steps to set up the app on your local machine:
 3. **Install Dependencies:**
     ```bash
     flutter pub get
+4. **Add Your Api Key here from Makersuite**
+    <img src="assets/3.png" alt="Screenshot 1" width="400"/>
+
 4. **Run the App:**
     ```bash
     flutter run
 ## SCREENSHOTS
 
-   ![](assets/1.jpg) ![](assets/2.jpg)
+   <img src="assets/1.jpg" alt="Screenshot 1" width="200"/> <img src="assets/2.jpg" alt="Screenshot 2" width="200"/>
 
 ## CONTRIBUTIONS
 Contributions are encouraged! If you encounter issues or have suggestions for enhancements, please feel free to open an issue or submit a pull request.

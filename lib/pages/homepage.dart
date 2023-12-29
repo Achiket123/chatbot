@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:chatbot/main.dart';
 import 'package:chatbot/system/auth.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
@@ -108,7 +109,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
     const headers = {'Content-Type': 'application/json'};
     const url =
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=AIzaSyD_TXjNE9eWVZSVY4YQTQEEBhqfrPsjNnY";
+        "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$APIKEY";
 
     var body = {
       "contents": [

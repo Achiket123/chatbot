@@ -4,6 +4,7 @@ import 'package:chatbot/system/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
+const APIKEY = '';
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox(boxName);
