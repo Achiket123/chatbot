@@ -23,10 +23,10 @@ Follow these steps to set up the app on your local machine:
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/your_username/your_repo.git
+   git clone git@github.com:Achiket123/chatbot.git
 2. **Navigate to the Project Directory:**
     ```bash 
-    cd your_repo
+    cd chatbot
 3. **Install Dependencies:**
     ```bash
     flutter pub get
@@ -40,6 +40,9 @@ Follow these steps to set up the app on your local machine:
 ## SCREENSHOTS
 
    <img src="assets/1.jpg" alt="Screenshot 1" width="200"/> <img src="assets/2.jpg" alt="Screenshot 2" width="200"/>
+
+## DOWNLOAD
+-To download the app [click here](https://drive.google.com/file/d/10eM5ToGyF0cwhdybEOsf2BYQ8BQPuK8a/view?usp=drive_link)
 
 ## CONTRIBUTIONS
 Contributions are encouraged! If you encounter issues or have suggestions for enhancements, please feel free to open an issue or submit a pull request.

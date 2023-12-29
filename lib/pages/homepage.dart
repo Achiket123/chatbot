@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() async {
-    await savingData(allMessages);
+    await Hive.close();
     super.dispose();
   }
 
@@ -49,31 +49,25 @@ class _HomePageState extends State<HomePage> {
     bot = ChatUser(id: '2', firstName: 'Gemini', lastName: 'AI');
     var nalla = box.get('key');
 
-    if (nalla != null) {    
+    if (nalla != null) {
       savedMessages = nalla;
     }
-    if(savedMessages.isEmpty){
-    firstTime();
+    if (savedMessages.isEmpty) {
+      firstTime();
     }
     fetchData();
   }
 
-  savingData(List<ChatMessage> allMessages) async {
-    savedMessages.clear();
-    for (var element in allMessages) {
-      var text = element.text;
-      var user = [
-        element.user.id,
-        element.user.firstName,
-        element.user.lastName
-      ];
-      var time = element.createdAt.toString();
-      savedMessages.add([
-        text,
-        [user, time]
-      ]);
-    }
-    box.put('key', savedMessages);
+  savingData(ChatMessage message) async {
+    var text = message.text;
+    var user = [message.user.id, message.user.firstName, message.user.lastName];
+    var time = message.createdAt.toString();
+    savedMessages.add([
+      text,
+      [user, time]
+    ]);
+
+    await box.put('key', savedMessages);
   }
 
   firstTime() {
@@ -98,7 +92,7 @@ class _HomePageState extends State<HomePage> {
           text: element[0],
           user: any,
           createdAt: DateTime.parse(element[1][1]));
-      allMessages.add(message);
+      allMessages.insert(0,message);
       setState(() {});
     }
   }
@@ -106,7 +100,9 @@ class _HomePageState extends State<HomePage> {
   getdata(ChatMessage message) async {
     allMessages.insert(0, message);
     typing.insert(0, bot);
-    setState(() {});
+    setState(() async {
+      await savingData(message);
+    });
     const headers = {'Content-Type': 'application/json'};
     const url =
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$APIKEY";
@@ -130,13 +126,17 @@ class _HomePageState extends State<HomePage> {
         typing.remove(bot);
         allMessages.insert(0, m);
 
-        setState(() {});
+        setState(() async {
+          await savingData(m);
+        });
       },
     ).catchError((onError) {
       ChatMessage errorMessage =
           ChatMessage(user: bot, createdAt: DateTime.now());
       allMessages.insert(0, errorMessage);
-      setState(() {});
+      setState(() async {
+        await savingData(errorMessage);
+      });
     });
   }
 
