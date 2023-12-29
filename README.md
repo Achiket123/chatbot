@@ -31,7 +31,7 @@ Follow these steps to set up the app on your local machine:
     ```bash
     flutter pub get
 4. **Add Your Api Key here from Makersuite**
-    <img src="assets/3.png" alt="Screenshot 1" width="400"/>
+    <img src="assets/3.png" alt="Screenshot 1" width="600"/>
 
 4. **Run the App:**
     ```bash
