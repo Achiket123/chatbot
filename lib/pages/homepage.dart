@@ -49,12 +49,12 @@ class _HomePageState extends State<HomePage> {
     bot = ChatUser(id: '2', firstName: 'Gemini', lastName: 'AI');
     var nalla = box.get('key');
 
-    if (nalla == null) {
-      savedMessages = [];
-    } else {
+    if (nalla != null) {    
       savedMessages = nalla;
     }
+    if(savedMessages.isEmpty){
     firstTime();
+    }
     fetchData();
   }
 
