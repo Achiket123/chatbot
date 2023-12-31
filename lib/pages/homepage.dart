@@ -1,20 +1,19 @@
 import 'dart:convert';
+import 'package:chatbot/cubit/statemanage.dart';
 import 'package:chatbot/main.dart';
 import 'package:chatbot/system/auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomePage extends StatelessWidget {
+  HomePage({super.key}) {
+    initState();
+  }
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
   List<ChatUser> typing = [];
 
   List savedMessages = [];
@@ -31,15 +30,7 @@ class _HomePageState extends State<HomePage> {
     return box2.get('name');
   }
 
-  @override
-  void dispose() async {
-    await Hive.close();
-    super.dispose();
-  }
-
-  @override
   void initState() {
-    super.initState();
     final data = getData();
     me = ChatUser(
       id: '1',
@@ -55,7 +46,6 @@ class _HomePageState extends State<HomePage> {
     if (savedMessages.isEmpty) {
       firstTime();
     }
-    fetchData();
   }
 
   savingData(ChatMessage message) async {
@@ -76,33 +66,11 @@ class _HomePageState extends State<HomePage> {
         text: 'Hi ${me.firstName} I am your Personal Assisstant',
         user: bot);
     allMessages.insert(0, mess);
-    setState(() {});
+    // setState(() {});
   }
 
-  fetchData() {
-    ChatUser any;
-
-    for (var element in savedMessages) {
-      if (me.id.toString() == element[1][0][0].toString()) {
-        any = me;
-      } else {
-        any = bot;
-      }
-      ChatMessage message = ChatMessage(
-          text: element[0],
-          user: any,
-          createdAt: DateTime.parse(element[1][1]));
-      allMessages.insert(0,message);
-      setState(() {});
-    }
-  }
-
-  getdata(ChatMessage message) async {
-    allMessages.insert(0, message);
-    typing.insert(0, bot);
-    setState(() async {
-      await savingData(message);
-    });
+  getReply(ChatMessage message, MessageBloc currentContext) async {
+    currentContext.addMessage(message);
     const headers = {'Content-Type': 'application/json'};
     const url =
         "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=$APIKEY";
@@ -116,28 +84,12 @@ class _HomePageState extends State<HomePage> {
         }
       ]
     };
-    await http
-        .post(Uri.parse(url), headers: headers, body: jsonEncode(body))
-        .then(
-      (value) {
-        var result = jsonDecode(value.body);
-        var output = result["candidates"][0]['content']['parts'][0]['text'];
-        var m = ChatMessage(user: bot, createdAt: DateTime.now(), text: output);
-        typing.remove(bot);
-        allMessages.insert(0, m);
+    var value = await http.post(Uri.parse(url),
+        headers: headers, body: jsonEncode(body));
 
-        setState(() async {
-          await savingData(m);
-        });
-      },
-    ).catchError((onError) {
-      ChatMessage errorMessage =
-          ChatMessage(user: bot, createdAt: DateTime.now());
-      allMessages.insert(0, errorMessage);
-      setState(() async {
-        await savingData(errorMessage);
-      });
-    });
+    var result = jsonDecode(value.body);
+    var output = result["candidates"][0]['content']['parts'][0]['text'];
+    return ChatMessage(user: bot, createdAt: DateTime.now(), text: output);
   }
 
   MessageOptions messageOptions = const MessageOptions(
@@ -149,14 +101,28 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 50, 50, 50),
-      body: DashChat(
-        currentUser: me,
-        onSend: getdata,
-        messages: allMessages,
-        typingUsers: typing,
-        messageOptions: messageOptions,
-      ),
-    );
+        backgroundColor: const Color.fromARGB(255, 50, 50, 50),
+        body: BlocBuilder<MessageBloc, List<ChatMessage>>(
+            builder: (context, state) {
+          BlocProvider.of<MessageBloc>(context)
+              .loadPreviousMessages(savedMessages, me, bot);
+          return DashChat(
+            currentUser: me,
+            onSend: (ChatMessage message) async {
+              final currentContext = BlocProvider.of<MessageBloc>(context);
+              typing.add(bot);
+              await savingData(message);
+              var m = await getReply(message, currentContext);
+
+              typing.remove(bot);
+
+              currentContext.addMessage(m);
+              await savingData(m);
+            },
+            messages: state,
+            typingUsers: typing,
+            messageOptions: messageOptions,
+          );
+        }));
   }
 }

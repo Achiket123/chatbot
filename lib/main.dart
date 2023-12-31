@@ -1,7 +1,9 @@
+import 'package:chatbot/cubit/statemanage.dart';
 import 'package:chatbot/pages/homepage.dart';
 import 'package:chatbot/pages/login.dart';
 import 'package:chatbot/system/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 
 const APIKEY = '';
@@ -18,8 +20,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Hive.box(boxName).values.isEmpty ? Login() : const HomePage());
+    return BlocProvider(
+      create: (context) => MessageBloc(),
+      child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: Hive.box(boxName).values.isEmpty ? Login() : HomePage()),
+    );
   }
 }
