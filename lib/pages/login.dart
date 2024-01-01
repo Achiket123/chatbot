@@ -51,10 +51,8 @@ class Login extends StatelessWidget {
                 box.put('name',
                     [textEditingController.text, textEditingController1.text]);
                 pushing() {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (builder) =>  HomePage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (builder) => HomePage()));
                 }
 
                 pushing();
@@ -66,7 +64,7 @@ class Login extends StatelessWidget {
           padding: EdgeInsets.all(20),
           child: Center(
               child: Text(
-            'MADE FOR CHUTKI, CHUSWANI,PAANI AND PEDOPHILE',
+            'CHAT WITH YOUR ONLY FRIENDS - INTROVERTS',
             style: TextStyle(
                 color: Colors.white, fontSize: 10, fontWeight: FontWeight.w700),
           )),

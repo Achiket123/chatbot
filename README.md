@@ -41,6 +41,9 @@ Follow these steps to set up the app on your local machine:
 
    <img src="assets/1.jpg" alt="Screenshot 1" width="200"/> <img src="assets/2.jpg" alt="Screenshot 2" width="200"/>
 
+   <img src="assets/5.png" alt="Screenshot 1" width="200"/> <img src="assets/6.png" alt="Screenshot 2" width="200"/>
+    <img src="assets/7.png" alt="Screenshot 1" width="200"/> <img src="assets/8.png" alt="Screenshot 2" width="200"/>
+
 ## DOWNLOAD
 -To download the app [click here](https://drive.google.com/file/d/10eM5ToGyF0cwhdybEOsf2BYQ8BQPuK8a/view?usp=drive_link)
 

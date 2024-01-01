@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
         text: 'Hi ${me.firstName} I am your Personal Assisstant',
         user: bot);
     allMessages.insert(0, mess);
-    // setState(() {});
+
   }
 
   getReply(ChatMessage message, MessageBloc currentContext) async {
@@ -90,7 +90,8 @@ class HomePage extends StatelessWidget {
         headers: headers, body: jsonEncode(body));
 
     var result = jsonDecode(value.body);
-    
+    print(result);
+
     var output = result["candidates"] != null
         ? result["candidates"][0]['content']['parts'][0]['text']
         : 'unable to reach';
@@ -109,7 +110,7 @@ class HomePage extends StatelessWidget {
         typing.add(bot);
         var reply = await getReply(message, bloc);
 
-       
+        print(reply.text);
 
         typing.remove(bot);
         bloc.addVoiceMessage(reply);
@@ -146,14 +147,14 @@ class HomePage extends StatelessWidget {
             listenFor: const Duration(seconds: 3),
             onResult: (result) async {
               text = result.recognizedWords;
-              
+
               ChatMessage m = ChatMessage(
                 user: me,
                 createdAt: DateTime.now(),
                 text: text,
               );
               Future.delayed(const Duration(seconds: 2), () {
-                Navigator.of(context).pop(); 
+                Navigator.of(context).pop();
               });
               await savingData(m);
               await getReplyAndAddToBloc(m, messageBloc);

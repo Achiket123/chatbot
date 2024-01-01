@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 
-const APIKEY = '';
+const APIKEY = 'AIzaSyD_TXjNE9eWVZSVY4YQTQEEBhqfrPsjNnY';
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox(boxName);
