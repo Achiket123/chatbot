@@ -216,6 +216,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  hyper_lint:
+    dependency: transitive
+    description:
+      name: hyper_lint
+      sha256: "08e3c21edefa36b24efb601b088fff3b52b73334e21e2ffe35fb0489c5ba272c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   intl:
     dependency: transitive
     description:
@@ -224,6 +232,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.1"
+  js:
+    dependency: transitive
+    description:
+      name: js
+      sha256: f2c445dce49627136094980615a031419f7f3eb393237e4ecd97ac15dea343f3
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.7"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -328,6 +352,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.1"
+  pedantic:
+    dependency: transitive
+    description:
+      name: pedantic
+      sha256: "67fc27ed9639506c856c840ccce7594d0bdcd91bc8d53d6e52359449a1d50602"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.11.1"
   petitparser:
     dependency: transitive
     description:
@@ -376,6 +408,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  simple_ripple_animation:
+    dependency: "direct main"
+    description:
+      name: simple_ripple_animation
+      sha256: d654c4a4a4a61ec8cf52b7b06dcf1bcb311c98e0a1a98534c6355aca2a73b6fd
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -389,6 +429,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  speech_to_text:
+    dependency: "direct main"
+    description:
+      name: speech_to_text
+      sha256: e2c2667088a9800ffb504dbb34997314e3cae2f92ad5ed76c49124fb1bc6edac
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.5.1"
+  speech_to_text_macos:
+    dependency: transitive
+    description:
+      name: speech_to_text_macos
+      sha256: "6b5575e5a8346be1779838b0a482c259474965b5943668830b479147a75b5bfc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
+  speech_to_text_platform_interface:
+    dependency: transitive
+    description:
+      name: speech_to_text_platform_interface
+      sha256: "2ef9c0abf3b4340998fcb489afc4fc8cd7574eff21d912673be59b60ff16850c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   sprintf:
     dependency: transitive
     description:

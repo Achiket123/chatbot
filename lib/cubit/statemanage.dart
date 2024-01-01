@@ -12,7 +12,7 @@ class MessageBloc extends Cubit<List<ChatMessage>> {
   void loadPreviousMessages(
       List listofSaveMessages, ChatUser me, ChatUser bot) {
     ChatUser any;
-    
+
     List<ChatMessage> newState = [];
     for (var element in listofSaveMessages) {
       if (me.id.toString() == element[1][0][0].toString()) {
@@ -31,7 +31,8 @@ class MessageBloc extends Cubit<List<ChatMessage>> {
     emit(newState);
   }
 
-  void addBotMessage(ChatMessage message) {
-    emit([message, ...state]);
+  void addVoiceMessage(ChatMessage message) {
+    var newState = [message, ...state];
+    emit(newState);
   }
 }
