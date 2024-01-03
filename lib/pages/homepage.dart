@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:chat_package/models/chat_message.dart';
 import 'package:chat_package/models/media/chat_media.dart';
-import 'package:chat_package/models/media/media_type.dart';
 import 'package:chatbot/cubit/statemanage.dart';
 import 'package:chatbot/main.dart';
-import 'package:chatbot/pages/imagepage.dart';
 import 'package:chatbot/system/auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_gemini/google_gemini.dart';
@@ -13,7 +11,6 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:chat_package/chat_package.dart';
 
@@ -53,6 +50,7 @@ class HomePage extends StatelessWidget {
   }
 
   void savingData(ChatMessage message) async {
+    print(message.createdAt);
     if (message.chatMedia != null) {
       var text = message.text;
       var iSender = message.isSender;
@@ -60,12 +58,14 @@ class HomePage extends StatelessWidget {
       var url = message.chatMedia?.url;
       var mediaType = message.chatMedia?.mediaType.toString();
       var list = [text, iSender, createdAt, url, mediaType];
+      print(list);
       savedMessages.add(list);
     } else {
       var text = message.text;
       var iSender = message.isSender;
       var createdAt = message.createdAt;
       var list = [text, iSender, createdAt];
+      print(list);
       savedMessages.add(list);
     }
 
@@ -150,8 +150,11 @@ class HomePage extends StatelessWidget {
                       onResult: (result) async {
                         text = result.recognizedWords;
 
-                        var audioMessage =
-                            ChatMessage(isSender: true, text: text);
+                        var audioMessage = ChatMessage(
+                            isSender: true,
+                            text: text,
+                            createdAt: DateTime.now());
+                        savingData(audioMessage);
                         if (isPhoto) {
                           currentContext.addMessage(audioMessage);
                           var response = await gemini.generateFromTextAndImages(
@@ -173,12 +176,11 @@ class HomePage extends StatelessWidget {
               },
               scrollController: scrollController,
               handleImageSelect: (imageMessage) {
-                imageMessage!.createdAt = DateTime.now();
                 if (imageMessage != null) {
                   isPhoto = true;
                   url = imageMessage.chatMedia!.url;
                   final currentContext = BlocProvider.of<MessageBloc>(context);
-                  currentContext.addMessage(imageMessage!);
+                  currentContext.addMessage(imageMessage);
 
                   savingData(imageMessage);
                 }
@@ -192,7 +194,7 @@ class HomePage extends StatelessWidget {
                     print(state);
                     scrollController.animateTo(
                       scrollController.position.maxScrollExtent,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeOut,
                     );
                     var response = await gemini.generateFromTextAndImages(
@@ -212,7 +214,9 @@ class HomePage extends StatelessWidget {
                 }
               },
               onTextSubmit: (ChatMessage message) async {
+                message.createdAt = DateTime.now();
                 final currentContext = BlocProvider.of<MessageBloc>(context);
+                savingData(message);
                 if (isPhoto) {
                   isPhoto = false;
                   currentContext.addMessage(message);
