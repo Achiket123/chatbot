@@ -1,14 +1,21 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:chat_package/models/chat_message.dart';
+import 'package:chat_package/models/media/chat_media.dart';
+import 'package:chat_package/models/media/media_type.dart';
 import 'package:chatbot/cubit/statemanage.dart';
 import 'package:chatbot/main.dart';
+import 'package:chatbot/pages/imagepage.dart';
 import 'package:chatbot/system/auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_gemini/google_gemini.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
-import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 import 'package:speech_to_text/speech_to_text.dart';
+import 'package:chat_package/chat_package.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
@@ -16,17 +23,17 @@ class HomePage extends StatelessWidget {
     initState();
   }
 
-  List<ChatUser> typing = [];
+  final ImagePicker picker = ImagePicker();
 
   List savedMessages = [];
 
   List<ChatMessage> allMessages = [];
 
+  List<ChatMedia> savedImages = [];
+
   final box = Hive.box(userData);
   final box2 = Hive.box(boxName);
   get newMethod => box2.get('name');
-  late ChatUser me;
-  late ChatUser bot;
 
   getData() {
     return box2.get('name');
@@ -34,12 +41,7 @@ class HomePage extends StatelessWidget {
 
   void initState() {
     final data = getData();
-    me = ChatUser(
-      id: '1',
-      firstName: data[0],
-      lastName: data[1],
-    );
-    bot = ChatUser(id: '2', firstName: 'Gemini', lastName: 'AI');
+
     var nalla = box.get('key');
 
     if (nalla != null) {
@@ -50,14 +52,22 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  savingData(ChatMessage message) async {
-    var text = message.text;
-    var user = [message.user.id, message.user.firstName, message.user.lastName];
-    var time = message.createdAt.toString();
-    savedMessages.add([
-      text,
-      [user, time]
-    ]);
+  void savingData(ChatMessage message) async {
+    if (message.chatMedia != null) {
+      var text = message.text;
+      var iSender = message.isSender;
+      var createdAt = message.createdAt;
+      var url = message.chatMedia?.url;
+      var mediaType = message.chatMedia?.mediaType.toString();
+      var list = [text, iSender, createdAt, url, mediaType];
+      savedMessages.add(list);
+    } else {
+      var text = message.text;
+      var iSender = message.isSender;
+      var createdAt = message.createdAt;
+      var list = [text, iSender, createdAt];
+      savedMessages.add(list);
+    }
 
     await box.put('key', savedMessages);
   }
@@ -65,10 +75,9 @@ class HomePage extends StatelessWidget {
   firstTime() {
     var mess = ChatMessage(
         createdAt: DateTime.now(),
-        text: 'Hi ${me.firstName} I am your Personal Assisstant',
-        user: bot);
+        text: 'Hi I am your Personal Assisstant',
+        isSender: false);
     allMessages.insert(0, mess);
-
   }
 
   getReply(ChatMessage message, MessageBloc currentContext) async {
@@ -95,102 +104,139 @@ class HomePage extends StatelessWidget {
     var output = result["candidates"] != null
         ? result["candidates"][0]['content']['parts'][0]['text']
         : 'unable to reach';
-    return ChatMessage(user: bot, createdAt: DateTime.now(), text: output);
+    return ChatMessage(
+        isSender: false, createdAt: DateTime.now(), text: output);
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MessageBloc, List<ChatMessage>>(
-        builder: (context, state) {
-      BlocProvider.of<MessageBloc>(context)
-          .loadPreviousMessages(savedMessages, me, bot);
+    BlocProvider.of<MessageBloc>(context).loadPreviousMessages(savedMessages);
+    return Scaffold(
+        backgroundColor: const Color.fromARGB(255, 50, 50, 50),
+        body: BlocBuilder<MediaBloc, List<ChatMedia>>(
+            builder: (context, mediaState) {
+          return BlocBuilder<MessageBloc, List<ChatMessage>>(
+              builder: (context, state) {
+            bool isPhoto = false;
+            String? url;
+            final gemini = GoogleGemini(
+              apiKey: APIKEY,
+            );
 
-      Future<void> getReplyAndAddToBloc(
-          ChatMessage message, MessageBloc bloc) async {
-        typing.add(bot);
-        var reply = await getReply(message, bloc);
+            final ScrollController scrollController = ScrollController();
 
-        print(reply.text);
+            Future<void> getReplyAndAddToBloc(
+                ChatMessage message, MessageBloc bloc) async {
+              var reply = await getReply(message, bloc);
 
-        typing.remove(bot);
-        bloc.addVoiceMessage(reply);
-        await savingData(reply);
-      }
+              print(reply.text);
+              bloc.addMessage(reply);
 
-      void handleVoiceInput() async {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: RippleAnimation(
-                    color: Colors.blue,
-                    delay: Duration(milliseconds: 300),
-                    repeat: true,
-                    minRadius: 75,
-                    ripplesCount: 6,
-                    duration: Duration(seconds: 3),
-                    child: Icon(Icons.mic),
-                  ));
-            }).onError((error, stackTrace) => null);
+              // bloc.addVoiceMessage(reply);
+              savingData(reply);
+            }
 
-        final messageBloc = BlocProvider.of<MessageBloc>(context);
+            return ChatScreen(
+              recording: () async {
+                final SpeechToText speech = SpeechToText();
+                String text = '';
 
-        String text = '';
-        SpeechToText speech = SpeechToText();
+                bool available = await speech.initialize();
+                final currentContext = BlocProvider.of<MessageBloc>(context);
+                if (available) {
+                  await speech.listen(
+                      listenFor: Duration(seconds: 3),
+                      partialResults: false,
+                      onResult: (result) async {
+                        text = result.recognizedWords;
 
-        bool available = await speech.initialize();
-        if (available) {
-          await speech.listen(
-            partialResults: false,
-            listenFor: const Duration(seconds: 3),
-            onResult: (result) async {
-              text = result.recognizedWords;
+                        var audioMessage =
+                            ChatMessage(isSender: true, text: text);
+                        if (isPhoto) {
+                          currentContext.addMessage(audioMessage);
+                          var response = await gemini.generateFromTextAndImages(
+                              query: audioMessage.text, image: File(url!));
+                          var mes = ChatMessage(
+                              isSender: false,
+                              createdAt: DateTime.now(),
+                              text: response.text);
+                          currentContext.addMessage(mes);
+                          savingData(mes);
+                        } else {
+                          var m = await getReply(audioMessage, currentContext);
 
-              ChatMessage m = ChatMessage(
-                user: me,
-                createdAt: DateTime.now(),
-                text: text,
-              );
-              Future.delayed(const Duration(seconds: 2), () {
-                Navigator.of(context).pop();
-              });
-              await savingData(m);
-              await getReplyAndAddToBloc(m, messageBloc);
-            },
-          );
-        }
-      }
+                          currentContext.addMessage(m);
+                          savingData(m);
+                        }
+                      });
+                }
+              },
+              scrollController: scrollController,
+              handleImageSelect: (imageMessage) {
+                imageMessage!.createdAt = DateTime.now();
+                if (imageMessage != null) {
+                  isPhoto = true;
+                  url = imageMessage.chatMedia!.url;
+                  final currentContext = BlocProvider.of<MessageBloc>(context);
+                  currentContext.addMessage(imageMessage!);
 
-      MessageOptions messageOptions = const MessageOptions(
-          currentUserTextColor: Colors.black,
-          showCurrentUserAvatar: true,
-          currentUserContainerColor: Color.fromARGB(255, 188, 188, 188),
-          containerColor: Color.fromARGB(255, 88, 88, 88));
-      InputOptions inputOptions = InputOptions(leading: [
-        IconButton(onPressed: handleVoiceInput, icon: const Icon(Icons.mic))
-      ]);
-      return Scaffold(
-          backgroundColor: const Color.fromARGB(255, 50, 50, 50),
-          body: DashChat(
-            currentUser: me,
-            onSend: (ChatMessage message) async {
-              final currentContext = BlocProvider.of<MessageBloc>(context);
-              typing.add(bot);
-              await savingData(message);
-              var m = await getReply(message, currentContext);
+                  savingData(imageMessage);
+                }
+              },
+              handleRecord: (audioMessage, canceled) async {
+                final currentContext = BlocProvider.of<MessageBloc>(context);
+                if (audioMessage != null) {
+                  if (isPhoto) {
+                    isPhoto = false;
+                    currentContext.addMessage(audioMessage);
+                    print(state);
+                    scrollController.animateTo(
+                      scrollController.position.maxScrollExtent,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                    );
+                    var response = await gemini.generateFromTextAndImages(
+                        query: audioMessage.text, image: File(url!));
+                    print(response.text);
+                    var mes = ChatMessage(
+                        isSender: false,
+                        createdAt: DateTime.now(),
+                        text: response.text);
+                    currentContext.addMessage(mes);
+                    savingData(mes);
+                  } else {
+                    var m = await getReply(audioMessage, currentContext);
+                    currentContext.addMessage(m);
+                    savingData(m);
+                  }
+                }
+              },
+              onTextSubmit: (ChatMessage message) async {
+                final currentContext = BlocProvider.of<MessageBloc>(context);
+                if (isPhoto) {
+                  isPhoto = false;
+                  currentContext.addMessage(message);
+                  print(state);
 
-              typing.remove(bot);
+                  var response = await gemini.generateFromTextAndImages(
+                      query: message.text, image: File(url!));
+                  print(response.text);
+                  var mes = ChatMessage(
+                      isSender: false,
+                      createdAt: DateTime.now(),
+                      text: response.text);
+                  currentContext.addMessage(mes);
+                  savingData(mes);
+                } else {
+                  var m = await getReply(message, currentContext);
 
-              currentContext.addMessage(m);
-              await savingData(m);
-            },
-            messages: state,
-            typingUsers: typing,
-            messageOptions: messageOptions,
-            inputOptions: inputOptions,
-          ));
-    });
+                  currentContext.addMessage(m);
+                  savingData(m);
+                }
+              },
+              messages: state,
+            );
+          });
+        }));
   }
 }
