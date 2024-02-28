@@ -8,7 +8,7 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
 
-const APIKEY = 'AIzaSyDsIjI9KwqXqcM066l5_RKnedM37YuExa0';
+const APIKEY = '';
 
 void main() async {
   await Hive.initFlutter();
