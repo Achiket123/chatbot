@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class Butt extends StatelessWidget {
@@ -31,17 +33,60 @@ class Textfield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    
+    return
+   
+    
+     
+      Container(
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30),
+            color: const Color.fromARGB(255, 226, 254, 162)),
+        child: TextField(
+          controller: controller,
+          decoration: InputDecoration(
+              border: InputBorder.none,
+              hintText: text,
+              contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0)),
+        ),
+           )
+     ;
+  }
+}
+
+
+
+class MessageField extends StatelessWidget {
+  String? text;
+  TextEditingController? controller;
+  void Function() buttonFunction;
+  MessageField({super.key, this.controller, this.text,required this.buttonFunction});
+
+  @override
+  Widget build(BuildContext context) {
+    
+    return
+   
+    
+     Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           color: const Color.fromARGB(255, 226, 254, 162)),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: text,
-            contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0)),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: text,
+                  contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0)),
+            ),
+          ),
+          IconButton(onPressed: buttonFunction, icon:const Icon(Icons.file_copy,size: 20,))
+        ],
       ),
     );
   }
 }
+

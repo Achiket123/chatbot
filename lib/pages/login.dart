@@ -1,7 +1,7 @@
 // ignore_for_file: must_be_immutable, prefer_typing_uninitialized_variables
 
 import 'package:chatbot/component/component.dart';
-import 'package:chatbot/pages/homepage.dart';
+import 'package:chatbot/pages/homepage_1.dart';
 import 'package:chatbot/system/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -51,10 +51,8 @@ class Login extends StatelessWidget {
                 box.put('name',
                     [textEditingController.text, textEditingController1.text]);
                 pushing() {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (builder) => const HomePage()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (builder) => HomePage()));
                 }
 
                 pushing();

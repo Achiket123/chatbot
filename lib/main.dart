@@ -1,14 +1,20 @@
-import 'package:chatbot/pages/homepage.dart';
+import 'package:chatbot/bloc/bloc.dart';
+import 'package:chatbot/pages/homepage_1.dart';
 import 'package:chatbot/pages/login.dart';
 import 'package:chatbot/system/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gemini/flutter_gemini.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/adapters.dart';
 
-const APIKEY = '';
+const APIKEY = 'AIzaSyDsIjI9KwqXqcM066l5_RKnedM37YuExa0';
+
 void main() async {
   await Hive.initFlutter();
   await Hive.openBox(boxName);
   await Hive.openBox(userData);
+  Gemini.init(apiKey: APIKEY);
 
   runApp(const MyApp());
 }
@@ -18,8 +24,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Hive.box(boxName).values.isEmpty ? Login() : const HomePage());
+    return BlocProvider(
+      create: (context) => MessageBloc(),
+      child: MaterialApp(debugShowCheckedModeBanner: false, home: HomePage())
+    );
   }
 }
