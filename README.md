@@ -39,7 +39,7 @@ Follow these steps to set up the app on your local machine:
     flutter run
 ## SCREENSHOTS
 
-   <img src="assets/1.jpg" alt="Screenshot 1" width="200"/> <img src="assets/2.jpg" alt="Screenshot 2" width="200"/>
+   <img src="assets/1.png" alt="Screenshot 1" width="200"/> <img src="assets/2.png" alt="Screenshot 2" width="200"/> <img src="assets/4.png" alt="Screenshot 2" width="200"/>
 
 ## DOWNLOAD
 -To download the app [click here](https://drive.google.com/file/d/19LQ47QHaFUkERJ1DPmgglKW6huU0lrDG/view?usp=drivesdk)
