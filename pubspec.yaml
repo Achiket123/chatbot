@@ -34,16 +34,18 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  
   cupertino_icons: ^1.0.2
+  
   http: ^1.1.2   
-  dash_chat_2: ^0.0.19   
+    
   hive: ^2.2.3   
   rename_app:   
   hive_flutter: ^1.1.0
   flutter_bloc:
   jumping_dot: ^0.0.6
   file_picker:
-  go_router: ^13.2.0
+ 
   flutter_gemini: ^2.0.3
 
 

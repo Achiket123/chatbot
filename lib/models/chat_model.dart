@@ -13,6 +13,7 @@ class ChatModel {
       {this.isWaiting=false,required this.text,
       required this.user,
       this.isSender = true,
+      this.file,
       required this.createAt,
-      this.file});
+      });
 }

@@ -33,49 +33,40 @@ class Textfield extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
-    return
-   
-    
-     
-      Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30),
-            color: const Color.fromARGB(255, 226, 254, 162)),
-        child: TextField(
-          controller: controller,
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: text,
-              contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0)),
-        ),
-           )
-     ;
+    return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          color: Color.fromARGB(255, 61, 62, 58)),
+      child: TextField(
+        style: TextStyle(color: Colors.white),
+        controller: controller,
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: text,
+            contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0)),
+      ),
+    );
   }
 }
-
-
 
 class MessageField extends StatelessWidget {
   String? text;
   TextEditingController? controller;
   void Function() buttonFunction;
-  MessageField({super.key, this.controller, this.text,required this.buttonFunction});
+  MessageField(
+      {super.key, this.controller, this.text, required this.buttonFunction});
 
   @override
   Widget build(BuildContext context) {
-    
-    return
-   
-    
-     Container(
+    return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
-          color: const Color.fromARGB(255, 226, 254, 162)),
+          color: const Color.fromARGB(255, 61, 62, 58)),
       child: Row(
         children: [
           Expanded(
             child: TextField(
+              style: TextStyle(color: Colors.white),
               controller: controller,
               decoration: InputDecoration(
                   border: InputBorder.none,
@@ -83,10 +74,14 @@ class MessageField extends StatelessWidget {
                   contentPadding: const EdgeInsets.fromLTRB(20, 0, 20, 0)),
             ),
           ),
-          IconButton(onPressed: buttonFunction, icon:const Icon(Icons.file_copy,size: 20,))
+          IconButton(
+              onPressed: buttonFunction,
+              icon: const Icon(
+                Icons.file_copy,
+                size: 20,
+              ))
         ],
       ),
     );
   }
 }
-
